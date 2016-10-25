@@ -311,8 +311,15 @@ static void main_loop(struct serial_port *port)
 	char dbgmsg[256];
 #endif
 
-	int serial_fd = ((struct serial_posix*)(port->chan))->fd;
+	int serial_fd;
 	int i;
+
+	if (NULL == port->chan) {
+		serial_port_destroy(port);
+		exit(port->lastError.error_code);
+	}
+
+	serial_fd = ((struct serial_posix*)(port->chan))->fd;
 
 	while (1) {
 		nfds = 0;
